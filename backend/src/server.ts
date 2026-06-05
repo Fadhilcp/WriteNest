@@ -4,6 +4,7 @@ import cors from "cors";
 import connectDB from "./config/db.config";
 import { env } from "./config/env.config";
 import authRouter from "./routes/auth.routes";
+import postRouter from "./routes/post.routes";
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/auth", authRouter);
+app.use("/api/posts", postRouter);
 
 app.listen(env.PORT, () => {
     console.log(`server is running http://localhost:3000`);
