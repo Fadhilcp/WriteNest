@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { AuthService } from "../services/auth.service";
-import { setCookie } from "../util/cookie";
+import { clearCookie, setCookie } from "../util/cookie";
 
 export class AuthController {
 
@@ -63,4 +63,17 @@ export class AuthController {
             next(error);
         }
     };
+
+    async logout(req: Request, res: Response, next: NextFunction) {
+        try {
+            
+            clearCookie(res);
+
+            res.status(200).json({
+                message: "Logged out successfully. Session destroyed."
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
 }
