@@ -1,27 +1,27 @@
 import express from "express";
-import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import connectDB from "./config/db.config";
+import { env } from "./config/env.config";
+import authRouter from "./routes/auth.routes";
 
 const app = express();
-dotenv.config();
 
 connectDB();
 
 app.use(cors({
-    origin: process.env.CLIENT_URL,
-    methods: process.env.CORS_METHODS?.split(","),
-    allowedHeaders: process.env.CORS_ALLOWED_HEADERS,
-    credentials: process.env.CORS_CREDENTIALS === "true"
+    origin: env.CLIENT_URL,
+    methods: env.CORS_METHODS?.split(","),
+    allowedHeaders: env.CORS_ALLOWED_HEADERS,
+    credentials: env.CORS_CREDENTIALS
 }));
 
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const PORT = process.env.PORT;
+app.use("/api/auth", authRouter);
 
-app.listen(PORT, () => {
+app.listen(env.PORT, () => {
     console.log(`server is running http://localhost:3000`);
 });
