@@ -1,5 +1,4 @@
 import dotenv from "dotenv"
-
 dotenv.config();
 
 function requiredEnv(name: string): string {
@@ -8,7 +7,6 @@ function requiredEnv(name: string): string {
     if (!value) {
         throw new Error(`${name} is required`);
     }
-
     return value;
 }
 
@@ -31,4 +29,8 @@ export const env = {
 
     COOKIE_MAX_AGE: requiredEnv("COOKIE_MAX_AGE"),
     COOKIE_SAME_SITE: requiredEnv("COOKIE_SAME_SITE"),
+
+    CLOUDINARY_CLOUD_NAME: requiredEnv("CLOUDINARY_CLOUD_NAME"),
+    CLOUDINARY_API_KEY: requiredEnv("CLOUDINARY_API_KEY"),
+    CLOUDINARY_API_SECRET: requiredEnv("CLOUDINARY_API_SECRET"),
 };
