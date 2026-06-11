@@ -29,8 +29,9 @@ export class BaseRepository<TDocument> implements IBaseRepository<TDocument> {
     }
 
     async delete(id: string): Promise<boolean> {
-        const result = await this.model.findByIdAndDelete(id);
+        const result = await this.model.findByIdAndUpdate(
+            id, { isDeleted: true }, { new: true }
+        );
         return !!result;
     }
-
 }

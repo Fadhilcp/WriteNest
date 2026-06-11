@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from "express";
 import { PostService } from "../services/post.service";
-import { clearCookie } from "../util/cookie";
 
 export class PostController {
     constructor(private _postService: PostService) {}
@@ -81,6 +80,7 @@ export class PostController {
             }
 
             await this._postService.deletePost(postId, authorId);
+
             res.status(200).json({ message: "Post deleted successfully" });
         } catch (error) {
             next(error);
