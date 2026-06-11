@@ -20,6 +20,11 @@ const postSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "User",
         required: true,
+    },
+    isDeleted: {
+        type: Boolean,
+        default: false,
+        required: true,
     }
 }, { timestamps: true });
 

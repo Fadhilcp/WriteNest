@@ -5,6 +5,7 @@ export interface IPost {
     image?: string;
     content: string;
     author: Types.ObjectId;
+    isDeleted: boolean;
 }
 
 export interface IPostDocument extends Document, IPost {

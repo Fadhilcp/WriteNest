@@ -17,7 +17,7 @@ export class AuthService implements IAuthService {
         
         const isUserExist = await this._userRepository.findByEmail(email);
 
-        if(!isUserExist) throw new Error("User alrady exists!");
+        if(isUserExist) throw new Error("User alrady exists!");
 
         if(password !== confirmPassword){
             throw new Error("Password is not matching");
@@ -41,10 +41,10 @@ export class AuthService implements IAuthService {
     : Promise<{ user: Partial<UserDto>; refreshToken: string; accessToken: string; }> {
 
         const user = await this._userRepository.findByEmail(email);
-        if (!user) throw new Error("Invalid email or password");
+        if (!user) throw new Error("Invalid email");
 
         const isPasswordMatch = await bcrypt.compare(password, user.password);
-        if (!isPasswordMatch) throw new Error("Invalid email or password");
+        if (!isPasswordMatch) throw new Error("Invalid password");
 
         const refreshToken = generateRefreshToken(user._id.toString());
         const accessToken = generateAccessToken(user._id.toString(), email);

@@ -60,6 +60,7 @@ export class AuthController {
                 accessToken: result.accessToken,
             });
         } catch (error) {
+            clearCookie(res);
             next(error);
         }
     };

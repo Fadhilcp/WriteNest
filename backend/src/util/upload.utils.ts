@@ -1,4 +1,4 @@
-import cloudinary from "../config/cloudinary.config.js";
+import cloudinary from "../config/cloudinary.config";
 
 export function uploadToCloudinary(fileBuffer: Buffer, folder: string = "writenest_posts"): Promise<string> {
 

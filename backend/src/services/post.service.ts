@@ -1,9 +1,9 @@
-import { PostRepository } from "../repositories/post.repository";
+import { IPostRepository } from "../repositories/interfaces/IPostRepository";
 import { IPostDocument } from "../types/post.type";
 import { uploadToCloudinary } from "../util/upload.utils";
 
 export class PostService {
-    constructor(private _postRepository: PostRepository) {}
+    constructor(private _postRepository: IPostRepository) {}
 
     async createPost(data: { title: string; content: string; authorId: string }, fileBuffer?: Buffer): Promise<IPostDocument> {
         let imageUrl = "";
@@ -21,7 +21,7 @@ export class PostService {
     }
 
     async getAllPosts(): Promise<IPostDocument[]> {
-        return await this._postRepository.find({});
+        return await this._postRepository.findAllWithAuthor();
     }
 
     async getPostById(id: string): Promise<IPostDocument | null> {
@@ -31,7 +31,8 @@ export class PostService {
     }
 
     async updatePost(id: string, authorId: string, updates: Partial<IPostDocument>, fileBuffer?: Buffer): Promise<IPostDocument | null> {
-        const post = await this._postRepository.findById(id);
+
+        const post = await this._postRepository.findOne({ _id: id, isDeleted: false });
         if (!post) throw new Error("Post not found");
 
         if (post.author.toString() !== authorId) {

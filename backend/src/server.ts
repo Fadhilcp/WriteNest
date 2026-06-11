@@ -5,6 +5,7 @@ import connectDB from "./config/db.config";
 import { env } from "./config/env.config";
 import authRouter from "./routes/auth.routes";
 import postRouter from "./routes/post.routes";
+import { errorMiddleware } from "./middleware/error.middleware";
 
 const app = express();
 
@@ -13,7 +14,7 @@ connectDB();
 app.use(cors({
     origin: env.CLIENT_URL,
     methods: env.CORS_METHODS?.split(","),
-    allowedHeaders: env.CORS_ALLOWED_HEADERS,
+    allowedHeaders: env.CORS_ALLOWED_HEADERS.split(","),
     credentials: env.CORS_CREDENTIALS
 }));
 
@@ -24,6 +25,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/auth", authRouter);
 app.use("/api/posts", postRouter);
 
+app.use(errorMiddleware);
+
 app.listen(env.PORT, () => {
-    console.log(`server is running http://localhost:3000`);
+    console.log(`server is running http://localhost:5000`);
 });
