@@ -4,6 +4,8 @@ import { IPost } from "@/types";
 import { postService } from "@/services/post.service";
 import PostCard from "@/components/blog/PostCard";
 
+export const dynamic = "force-dynamic"; 
+
 function calculateReadTime(content: string = ""): string {
   const wordsPerMinute = 200;
   const words = content.split(/\s+/).filter(Boolean).length;

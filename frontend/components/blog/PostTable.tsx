@@ -42,7 +42,6 @@ export function PostTable({ filteredPosts, onEdit, onDeleteTarget }: PostTablePr
           <div className="flex items-center justify-end gap-1">
             <Link
               href={`/blogs/${p._id}`}
-              target="_blank"
               className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-md bg-transparent text-[14px] text-ink-light no-underline transition-all duration-150 hover:bg-surface-alt hover:text-ink"
               title="View live"
             >
