@@ -23,7 +23,6 @@ async function getPosts(): Promise<IPost[]> {
     const res = await postService.getAll();
     return res.data || [];
   } catch (error) {
-    console.error("Critical error fetching server side posts:", error);
     return [];
   }
 }

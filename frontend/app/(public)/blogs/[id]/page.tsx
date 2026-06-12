@@ -9,7 +9,6 @@ async function getPostByIdOrSlug(id: string): Promise<IPost | null> {
     const res = await postService.getById(id);
     return res.data || res || null;
   } catch (error) {
-    console.error("Error fetching post data detail:", error);
     return null;
   }
 }

@@ -25,7 +25,7 @@ export default function Navbar() {
         try {
             await authService.logout();
         } catch (error) {
-            console.error(error);
+            await authService.logout();
         } finally {
             dispatch(clearCredentials());
             router.push("/");

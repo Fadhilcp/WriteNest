@@ -24,7 +24,6 @@ export default function MyPostsPage() {
 
       setPosts(res.data);
     } catch (err) {
-      console.error("Error fetching posts:", err);
       showToast("Failed to load posts from API.");
     } finally {
       setLoading(false);
@@ -56,7 +55,6 @@ export default function MyPostsPage() {
       setModal(null);
       fetchPosts();
     } catch (err) {
-      console.error("Error saving post:", err);
       showToast("Error processing save configuration.");
     }
   };
@@ -69,7 +67,6 @@ export default function MyPostsPage() {
       showToast("Post removed permanently.");
       fetchPosts();
     } catch (err) {
-      console.error("Error deleting target post:", err);
       showToast("Failed to execute deletion operation.");
     }
   };

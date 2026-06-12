@@ -42,7 +42,6 @@ export default function PostFormModal({ post, onClose, onSave }: PostFormModalPr
       setSaving(true);
       await onSave(title, content, selectedFile);
     } catch (err) {
-      console.error("Failed to process save execution", err);
     } finally {
       setSaving(false);
     }
