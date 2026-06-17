@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from "express";
-import { PostService } from "../services/post.service";
+import { IPostService } from "../services/interfaces/IPostService";
 
 export class PostController {
-    constructor(private _postService: PostService) {}
+    constructor(private _postService: IPostService) {}
 
     async create(req: Request, res: Response, next: NextFunction) {
         try {

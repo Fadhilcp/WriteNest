@@ -1,8 +1,9 @@
 import { IPostRepository } from "../repositories/interfaces/IPostRepository";
 import { IPostDocument } from "../types/post.type";
 import { uploadToCloudinary } from "../util/upload.utils";
+import { IPostService } from "./interfaces/IPostService";
 
-export class PostService {
+export class PostService implements IPostService{
     constructor(private _postRepository: IPostRepository) {}
 
     async createPost(data: { title: string; content: string; authorId: string }, fileBuffer?: Buffer): Promise<IPostDocument> {

@@ -1,10 +1,10 @@
 import { Request, Response, NextFunction } from "express";
-import { AuthService } from "../services/auth.service";
 import { clearCookie, setCookie } from "../util/cookie";
+import { IAuthService } from "../services/interfaces/IAuthService";
 
 export class AuthController {
 
-    constructor(private _authService: AuthService) {}
+    constructor(private _authService: IAuthService) {}
 
     async register(req: Request, res: Response, next: NextFunction) {
         try {
