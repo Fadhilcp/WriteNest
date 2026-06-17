@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import { clearCookie, setCookie } from "../util/cookie";
 import { IAuthService } from "../services/interfaces/IAuthService";
+import { APP_MESSAGES } from "../constants/messages";
+import { HttpStatus } from "../constants/statusCodes";
 
 export class AuthController {
 
@@ -14,8 +16,8 @@ export class AuthController {
 
             setCookie(res, result.refreshToken);
 
-            res.status(201).json({
-                message: "Registration successful",
+            res.status(HttpStatus.CREATED).json({
+                message: APP_MESSAGES.AUTH.REGISTER_SUCCESS,
                 user: result.user,
                 accessToken: result.accessToken,
             });
@@ -32,8 +34,8 @@ export class AuthController {
 
             setCookie(res, result.refreshToken)
 
-            res.status(200).json({
-                message: "Login successful",
+            res.status(HttpStatus.OK).json({
+                message: APP_MESSAGES.AUTH.LOGIN_SUCCESS,
                 user: result.user,
                 accessToken: result.accessToken,
             });
@@ -47,7 +49,7 @@ export class AuthController {
             const incomingRefreshToken = req.cookies.refreshToken;
 
             if (!incomingRefreshToken) {
-                res.status(401).json({ message: "Refresh token is missing" });
+                res.status(HttpStatus.UNAUTHORIZED).json({ message: APP_MESSAGES.AUTH.TOKEN_MISSING });
                 return;
             }
 
@@ -55,7 +57,7 @@ export class AuthController {
 
             setCookie(res, result.refreshToken)
 
-            res.status(200).json({
+            res.status(HttpStatus.OK).json({
                 user: result.user,
                 accessToken: result.accessToken,
             });
@@ -70,8 +72,8 @@ export class AuthController {
             
             clearCookie(res);
 
-            res.status(200).json({
-                message: "Logged out successfully. Session destroyed."
+            res.status(HttpStatus.OK).json({
+                message: APP_MESSAGES.AUTH.LOGOUT_SUCCESS
             });
         } catch (error) {
             next(error);

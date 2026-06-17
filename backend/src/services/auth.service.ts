@@ -1,3 +1,4 @@
+import { APP_MESSAGES } from "../constants/messages";
 import { UserDto } from "../dtos/user.dto";
 import { UserMapper } from "../mappers/user.mapper";
 import { IUserRepository } from "../repositories/interfaces/IUserRepository";
@@ -17,10 +18,10 @@ export class AuthService implements IAuthService {
         
         const isUserExist = await this._userRepository.findByEmail(email);
 
-        if(isUserExist) throw new Error("User alrady exists!");
+        if(isUserExist) throw new Error(APP_MESSAGES.AUTH.USER_EXISTS);
 
         if(password !== confirmPassword){
-            throw new Error("Password is not matching");
+            throw new Error(APP_MESSAGES.AUTH.PASSWORD_MISMATCH);
         }
 
         const hashPassword = await bcrypt.hash(password, 10);
@@ -41,10 +42,10 @@ export class AuthService implements IAuthService {
     : Promise<{ user: Partial<UserDto>; refreshToken: string; accessToken: string; }> {
 
         const user = await this._userRepository.findByEmail(email);
-        if (!user) throw new Error("Invalid email");
+        if (!user) throw new Error(APP_MESSAGES.AUTH.INVALID_EMAIL);
 
         const isPasswordMatch = await bcrypt.compare(password, user.password);
-        if (!isPasswordMatch) throw new Error("Invalid password");
+        if (!isPasswordMatch) throw new Error(APP_MESSAGES.AUTH.INVALID_PASSWORD);
 
         const refreshToken = generateRefreshToken(user._id.toString());
         const accessToken = generateAccessToken(user._id.toString(), email);
@@ -54,12 +55,12 @@ export class AuthService implements IAuthService {
 
     async refresh(incomingRefreshToken: string)
     : Promise<{ user: Partial<UserDto>; accessToken: string; refreshToken: string; }> {
-        if (!incomingRefreshToken) throw new Error("Refresh token required");
+        if (!incomingRefreshToken) throw new Error(APP_MESSAGES.AUTH.TOKEN_REQUIRED);
 
         const decoded = verifyRefreshToken(incomingRefreshToken);
 
         const user = await this._userRepository.findById(decoded.userId);
-        if (!user) throw new Error("User associated with this token no longer exists");
+        if (!user) throw new Error(APP_MESSAGES.AUTH.USER_NOT_FOUND);
 
         const refreshToken = generateRefreshToken(user._id.toString());
         const accessToken = generateAccessToken(user._id.toString(), user.email);

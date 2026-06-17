@@ -1,3 +1,4 @@
+import { API_ROUTES } from "@/constants/apiRoutes";
 import api from "@/lib/api";
 
 interface CreatePostData {
@@ -7,11 +8,11 @@ interface CreatePostData {
 
 class PostService {
     async getAll() {
-        return await api.get("/posts");
+        return await api.get(API_ROUTES.POSTS.GET_ALL);
     }
 
     async getById(postId: string) {
-        return await api.get(`/posts/${postId}`);
+        return await api.get(API_ROUTES.POSTS.GET_BY_ID(postId));
     }
 
     async create(data: CreatePostData, image?: File) {
@@ -25,7 +26,7 @@ class PostService {
             formData.append("image", image);
         }
 
-        return await api.post("/posts", formData, {
+        return await api.post(API_ROUTES.POSTS.CREATE, formData, {
             headers:{
                 "Content-Type": "multipart/form-data"
             }
@@ -45,7 +46,7 @@ class PostService {
             formData.append("image", image);
         }
 
-        return await api.put(`/posts/${postId}`, formData, {
+        return await api.put(API_ROUTES.POSTS.UPDATE(postId), formData, {
             headers:{
                 "Content-Type": "multipart/form-data"
             }
@@ -53,7 +54,7 @@ class PostService {
     }
 
     async delete(postId: string) {
-        return await api.delete(`/posts/${postId}`);
+        return await api.delete(API_ROUTES.POSTS.DELETE(postId));
     }
 }
 

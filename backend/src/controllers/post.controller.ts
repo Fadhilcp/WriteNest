@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { IPostService } from "../services/interfaces/IPostService";
+import { HttpStatus } from "../constants/statusCodes";
+import { APP_MESSAGES } from "../constants/messages";
 
 export class PostController {
     constructor(private _postService: IPostService) {}
@@ -10,7 +12,7 @@ export class PostController {
             const authorId = req.user?.userId;
 
             if (!authorId) {
-                res.status(401).json({ message: "Unauthorized" });
+                res.status(HttpStatus.UNAUTHORIZED).json({ message: APP_MESSAGES.AUTH.UNAUTHORIZED });
                 return;
             }
 
@@ -19,7 +21,7 @@ export class PostController {
                 req.file?.buffer
             );
 
-            res.status(201).json({ message: "Post created successfully", post });
+            res.status(HttpStatus.CREATED).json({ message: APP_MESSAGES.POSTS.CREATE_SUCCESS, post });
         } catch (error) {
             next(error);
         }
@@ -28,7 +30,7 @@ export class PostController {
     async getAll(req: Request, res: Response, next: NextFunction) {
         try {
             const posts = await this._postService.getAllPosts();
-            res.status(200).json(posts);
+            res.status(HttpStatus.OK).json(posts);
         } catch (error) {
             next(error);
         }
@@ -39,7 +41,7 @@ export class PostController {
             const postId = req.params.postId as string || "";
 
             const post = await this._postService.getPostById(postId);
-            res.status(200).json(post);
+            res.status(HttpStatus.OK).json(post);
         } catch (error) {
             next(error);
         }
@@ -52,7 +54,7 @@ export class PostController {
             const postId = req.params.postId as string || "";
 
             if (!authorId) {
-                res.status(401).json({ message: "Unauthorized" });
+                res.status(HttpStatus.UNAUTHORIZED).json({ message: APP_MESSAGES.AUTH.UNAUTHORIZED });
                 return;
             }
 
@@ -63,7 +65,7 @@ export class PostController {
                 req.file?.buffer
             );
 
-            res.status(200).json({ message: "Post updated successfully", post: updatedPost });
+            res.status(HttpStatus.OK).json({ message: APP_MESSAGES.POSTS.UPDATE_SUCCESS, post: updatedPost });
         } catch (error) {
             next(error);
         }
@@ -75,13 +77,13 @@ export class PostController {
             const postId = req.params.postId as string || "";
 
             if (!authorId) {
-                res.status(401).json({ message: "Unauthorized" });
+                res.status(HttpStatus.UNAUTHORIZED).json({ message: APP_MESSAGES.AUTH.UNAUTHORIZED });
                 return;
             }
 
             await this._postService.deletePost(postId, authorId);
 
-            res.status(200).json({ message: "Post deleted successfully" });
+            res.status(HttpStatus.OK).json({ message: APP_MESSAGES.POSTS.DELETE_SUCCESS });
         } catch (error) {
             next(error);
         }
