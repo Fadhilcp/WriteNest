@@ -2,19 +2,24 @@ import { APP_MESSAGES } from "../constants/messages";
 import { UserDto } from "../dtos/user.dto";
 import { UserMapper } from "../mappers/user.mapper";
 import { IUserRepository } from "../repositories/interfaces/IUserRepository";
+import { IUserDocument } from "../types/user.type";
 import generateAccessToken from "../util/generateAccessToken";
 import generateRefreshToken from "../util/generateRefreshToken";
+import { clearRegistrationState, getRegistrationState, storeRegistrationState } from "../util/otp.util";
+import { generateOTP } from "../util/otpGenerator";
 import { verifyRefreshToken } from "../util/verifyToken";
 import { IAuthService } from "./interfaces/IAuthService";
 import bcrypt from "bcrypt";
+import { IEmailService } from "./interfaces/IEmailService";
 
 export class AuthService implements IAuthService {
     constructor(
-        private _userRepository: IUserRepository
+        private _userRepository: IUserRepository,
+        private _emailService: IEmailService
     ){}
 
     async register(name: string, email: string, password: string, confirmPassword: string)
-    : Promise<{ user: Partial<UserDto>; refreshToken: string; accessToken: string; }> {
+    : Promise<{ email: string; }> {
         
         const isUserExist = await this._userRepository.findByEmail(email);
 
@@ -24,14 +29,43 @@ export class AuthService implements IAuthService {
             throw new Error(APP_MESSAGES.AUTH.PASSWORD_MISMATCH);
         }
 
-        const hashPassword = await bcrypt.hash(password, 10);
+        const passwordHash = await bcrypt.hash(password, 10);
 
-        const user = await this._userRepository.create({
+        const plainOTP = generateOTP();
+        const otpHash = await bcrypt.hash(plainOTP, 10);
+
+        await storeRegistrationState({
             name,
             email,
-            password: hashPassword
+            passwordHash,
+            otpHash
         });
 
+        await this._emailService.sendRegistrationOTP(email, plainOTP);
+
+        return { email };
+    }
+
+    async verifyAndRegister(email: string, plainOTP: string)
+    : Promise<{ user: Partial<IUserDocument>; refreshToken: string; accessToken: string; }> {
+        
+        const pendingUser = await getRegistrationState(email);
+        if (!pendingUser) throw new Error("Registration session expired. Please try again.");
+
+        const isMatch = await bcrypt.compare(plainOTP, pendingUser.otpHash);
+        if (!isMatch) throw new Error("Invalid OTP.");
+
+        const isUserExist = await this._userRepository.findByEmail(email);
+        if(isUserExist) throw new Error(APP_MESSAGES.AUTH.USER_EXISTS);
+
+        const user = await this._userRepository.create({
+            name: pendingUser.name,
+            email: pendingUser.email,
+            password: pendingUser.passwordHash
+        });
+
+        await clearRegistrationState(email);
+        
         const refreshToken = generateRefreshToken(user._id.toString());
         const accessToken = generateAccessToken(user._id.toString(), email);
 

@@ -14,6 +14,18 @@ export class AuthController {
 
             const result = await this._authService.register(name, email, password, confirmPassword);
 
+            res.status(HttpStatus.CREATED).json({ email: result.email });
+        } catch (error) {
+            next(error); 
+        }
+    };
+
+    async verifyRegister(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { email, otp } = req.body;
+
+            const result = await this._authService.verifyAndRegister(email, otp);
+
             setCookie(res, result.refreshToken);
 
             res.status(HttpStatus.CREATED).json({
@@ -22,7 +34,7 @@ export class AuthController {
                 accessToken: result.accessToken,
             });
         } catch (error) {
-            next(error); 
+            next(error);
         }
     };
 

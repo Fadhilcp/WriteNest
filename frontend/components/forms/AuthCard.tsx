@@ -1,13 +1,12 @@
-// app/(auth)/components/AuthCard.tsx
 import Link from "next/link";
 import Loading from "../ui/Loading";
 
 interface AuthCardProps {
   title: string;
   subtitle: string;
-  alternativeText: string;
-  alternativeLinkText: string;
-  alternativeHref: string;
+  alternativeText?: string;
+  alternativeLinkText?: string;
+  alternativeHref?: string;
   dividerText?: string;
   error: string | null;
   loading: boolean;
@@ -46,15 +45,17 @@ export default function AuthCard({
         <h2 className="font-serif text-[24px] font-medium -tracking-[0.5px] mb-1">
           {title}
         </h2>
-        <p className="mt-1 mb-5 text-[13px] text-ink-light">
-          {alternativeText}{" "}
-          <Link
-            href={alternativeHref}
-            className="font-medium text-accent-warm no-underline hover:underline"
-          >
-            {alternativeLinkText}
-          </Link>
-        </p>
+        {(alternativeText && alternativeLinkText && alternativeHref) && (
+            <p className="mt-1 mb-5 text-[13px] text-ink-light">
+            {alternativeText}{" "}
+            <Link
+                href={alternativeHref}
+                className="font-medium text-accent-warm no-underline hover:underline"
+            >
+                {alternativeLinkText}
+            </Link>
+            </p>
+        )}
 
         {/* Dynamic Horizontal Rules Splitter */}
         <div className="relative my-5 text-center text-[12px] text-ink-light before:absolute before:top-1/2 before:left-0 before:h-[1px] before:w-[calc(50%-28px)] before:bg-border after:absolute after:top-1/2 after:right-0 after:h-[1px] after:w-[calc(50%-28px)] after:bg-border">

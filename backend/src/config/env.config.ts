@@ -33,4 +33,20 @@ export const env = {
     CLOUDINARY_CLOUD_NAME: requiredEnv("CLOUDINARY_CLOUD_NAME"),
     CLOUDINARY_API_KEY: requiredEnv("CLOUDINARY_API_KEY"),
     CLOUDINARY_API_SECRET: requiredEnv("CLOUDINARY_API_SECRET"),
+
+    REDIS_CLIENT_USERNAME: requiredEnv('REDIS_CLIENT_USERNAME'),
+    REDIS_CLIENT_PASSWORD: requiredEnv('REDIS_CLIENT_PASSWORD'),
+    REDIS_HOST: requiredEnv('REDIS_HOST'),
+    REDIS_PORT: Number(requiredEnv('REDIS_PORT')),
+
+    OTP_LENGTH: Number(requiredEnv('OTP_LENGTH')),
+    OTP_TTL_SECONDS: Number(requiredEnv('OTP_TTL_SECONDS')),
+
+    SMTP_HOST: requiredEnv('SMTP_HOST'),
+    SMTP_PORT: Number(requiredEnv('SMTP_PORT')),
+    SMTP_USER: requiredEnv('SMTP_USER'),
+    SMTP_PASSWORD: requiredEnv('SMTP_PASSWORD'),
+    SMTP_FROM_EMAIL: requiredEnv('SMTP_FROM_EMAIL'),
+
+    
 };

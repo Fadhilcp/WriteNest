@@ -6,10 +6,14 @@ import { env } from "./config/env.config";
 import authRouter from "./routes/auth.routes";
 import postRouter from "./routes/post.routes";
 import { errorMiddleware } from "./middleware/error.middleware";
+import { initialiseRedis } from "./config/redis.config";
+import { initialiseMailer } from "./config/mailer.config";
 
 const app = express();
 
 connectDB();
+initialiseRedis();
+initialiseMailer();
 
 app.use(cors({
     origin: env.CLIENT_URL,

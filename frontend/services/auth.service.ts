@@ -8,14 +8,24 @@ interface RegisterData {
     confirmPassword: string;
 }
 
+interface VerifyRegisterData {
+    email: string;
+    otp: string;
+}
+
 interface LoginData {
     email: string;
     password: string;
 }
 
 class AuthService {
+    
     async register(data: RegisterData) {
         return await api.post(API_ROUTES.AUTH.REGISTER, data);
+    }
+    
+    async verifyRegister(data: VerifyRegisterData) {
+        return await api.post(API_ROUTES.AUTH.VERIFY_REGISTER, data);
     }
 
     async login(data: LoginData) {
@@ -32,5 +42,4 @@ class AuthService {
 }
 
 const authService = new AuthService();
-
 export default authService;
