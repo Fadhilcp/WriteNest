@@ -45,14 +45,13 @@ export default function Navbar() {
             {/* Navigation Actions */}
             <div className="flex items-center gap-4">
                 <Link
-                    href="/"
+                    href="/explore"
                     className="rounded-md bg-transparent px-[14px] py-[6px] text-[13px] font-normal text-ink-mid transition-all duration-150 no-underline hover:bg-surface-alt hover:text-ink"
                 >
                     Explore
                 </Link>
 
                 {!isMounted ? (
-                    // Optional Loading Skeleton or Null Placeholder to match initial layout structure
                     <div className="w-[140px]"/> 
                 ) : isLoggedIn ? (
                     <>

@@ -10,6 +10,7 @@ export interface IPost {
     content: string;
     image?: string;
     author: IAuthor;
+    isPublished: boolean;
     createdAt: string;
     updatedAt: string;
 }

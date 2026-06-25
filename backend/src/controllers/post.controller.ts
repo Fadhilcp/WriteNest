@@ -36,6 +36,26 @@ export class PostController {
         }
     };
 
+    async getMyPosts(req: Request, res: Response, next: NextFunction) {
+        try {
+            const userId = req.user?.userId;
+            const isPublished = req.query.published === 'true';
+            console.log("🚀 ~ PostController ~ getMyPosts ~ isPublished:", isPublished)
+
+            if (!userId) {
+                res.status(HttpStatus.UNAUTHORIZED).json({ message: APP_MESSAGES.AUTH.UNAUTHORIZED });
+                return;
+            }
+
+            const posts = await this._postService.getMyPosts(userId, isPublished);
+            console.log("🚀 ~ PostController ~ getMyPosts ~ posts:", posts)
+
+            res.status(HttpStatus.OK).json(posts);
+        } catch (error) {
+            next(error);
+        }
+    }
+
     async getById(req: Request, res: Response, next: NextFunction) {
         try {
             const postId = req.params.postId as string || "";
@@ -66,6 +86,27 @@ export class PostController {
             );
 
             res.status(HttpStatus.OK).json({ message: APP_MESSAGES.POSTS.UPDATE_SUCCESS, post: updatedPost });
+        } catch (error) {
+            next(error);
+        }
+    };
+
+    async publish(req: Request, res: Response, next: NextFunction) {
+        try {
+            const authorId = req.user?.userId;
+            const postId = req.params.postId as string || "";
+
+            if (!authorId) {
+                res.status(HttpStatus.UNAUTHORIZED).json({ message: APP_MESSAGES.AUTH.UNAUTHORIZED });
+                return;
+            }
+
+            const publishedPost = await this._postService.publishPost(postId, authorId);
+
+            res.status(HttpStatus.OK).json({ 
+                message: "Post successfully published and locked for editing.", 
+                post: publishedPost 
+            });
         } catch (error) {
             next(error);
         }

@@ -1,31 +1,29 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect } from "react";
 import { IPost } from "@/types";
 
-// ── 1. POST TABLE LIST COMPONENT ──
 interface PostTableProps {
   filteredPosts: IPost[];
   onEdit: (post: IPost) => void;
   onDeleteTarget: (id: string) => void;
+  onPublish: (id: string) => void;
 }
 
-export function PostTable({ filteredPosts, onEdit, onDeleteTarget }: PostTableProps) {
+export function PostTable({ filteredPosts, onEdit, onDeleteTarget, onPublish }: PostTableProps) {
   return (
     <div className="w-full overflow-hidden rounded-[14px] border border-border bg-surface">
-      <div className="grid grid-cols-[1fr_120px_130px] border-b border-border bg-surface-alt px-5 py-3 text-[11px] font-medium uppercase tracking-[0.05em] text-ink-light">
+      <div className="grid grid-cols-[1fr_120px_200px] border-b border-border bg-surface-alt px-5 py-3 text-[11px] font-medium uppercase tracking-[0.05em] text-ink-light">
         <span>Title</span>
-        <span>Author</span>
-        <span className="text-right">Actions</span>
+        <span>Status</span>
+        <span className="text-center">Actions</span>
       </div>
 
       {filteredPosts.map((p) => (
         <div 
-          className="grid grid-cols-[1fr_120px_130px] items-center border-b border-border last:border-b-0 px-5 py-4 transition-colors duration-150 hover:bg-surface-alt/40" 
+          className="grid grid-cols-[1fr_120px_200px] items-center border-b border-border last:border-b-0 px-5 py-4 transition-colors duration-150 hover:bg-surface-alt/40" 
           key={p._id}
         >
-          {/* Title and Date info */}
           <div className="pr-4">
             <h4 className="font-serif text-[15px] font-medium leading-[1.35] text-ink mb-1">{p.title}</h4>
             <span className="block text-[11px] text-ink-light">
@@ -33,29 +31,49 @@ export function PostTable({ filteredPosts, onEdit, onDeleteTarget }: PostTablePr
             </span>
           </div>
 
-          {/* Real Author Display */}
-          <div className="text-[13px] text-ink-mid overflow-hidden text-ellipsis whitespace-nowrap" title={p.author?.email}>
-            {p.author?.name || "Unknown"}
+          {/* Status Badge */}
+          <div className="flex items-center">
+            <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider ${
+                p.isPublished 
+                  ? "bg-green-100 text-green-700 border border-green-200" 
+                  : "bg-orange-100 text-orange-700 border border-orange-200"
+              }`}
+            >
+              {p.isPublished ? "Published" : "Draft"}
+            </span>
           </div>
 
           {/* Action Row */}
-          <div className="flex items-center justify-end gap-1">
+          <div className="flex items-center justify-center gap-1">
+            
             <Link
-              href={`/blogs/${p._id}`}
-              className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-md bg-transparent text-[14px] text-ink-light no-underline transition-all duration-150 hover:bg-surface-alt hover:text-ink"
-              title="View live"
+            href={`/blogs/${p._id}`}
+            className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-md bg-transparent text-[14px] text-ink-light no-underline transition-all duration-150 hover:bg-surface-alt hover:text-ink"
+            title="View live"
             >
-              ↗
+            ↗
             </Link>
+            
+            {!p.isPublished && (
+                <>
+                    <button
+                        className="inline-flex h-8 px-3.5 cursor-pointer items-center justify-center rounded-md bg-accent-warm text-[12px] font-medium text-white transition-all duration-150 hover:bg-accent-warm/90"
+                        onClick={() => onPublish(p._id)}
+                    >
+                        Publish
+                    </button>
+                    <button
+                        className="inline-flex h-8 px-3.5 cursor-pointer items-center justify-center rounded-md bg-transparent text-[13px] font-medium text-ink-mid transition-all duration-150 hover:bg-surface-alt hover:text-ink"
+                        onClick={() => onEdit(p)}
+                    >
+                        Edit
+                    </button>
+                </>
+            )}
+
+            
             <button
-              className="inline-flex h-8 px-3.5 cursor-pointer items-center justify-center rounded-md bg-transparent text-[13px] font-medium text-ink-mid transition-all duration-150 hover:bg-surface-alt hover:text-ink"
-              onClick={() => onEdit(p)}
-              title="Edit"
-            >
-              Edit
-            </button>
-            <button
-              className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-md bg-transparent text-[14px] text-ink-light transition-all duration-150 hover:bg-danger/10 hover:text-danger"
+              className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-md bg-transparent text-[14px] text-ink-light transition-all duration-150 hover:bg-danger/10 hover:text-danger ml-1"
               onClick={() => onDeleteTarget(p._id)}
               title="Delete"
             >

@@ -10,7 +10,7 @@ export class PostRepository extends BaseRepository<IPostDocument> implements IPo
 
     async findAllWithAuthor(): Promise<IPostDocument[]> {
         return await this.model
-            .find({ isDeleted: false })
+            .find({ isPublished: true, isDeleted: false })
             .populate("author", "name email")
             .sort({ createdAt: -1 });
     }
@@ -23,8 +23,14 @@ export class PostRepository extends BaseRepository<IPostDocument> implements IPo
     }
 
     async getPostWithAuthor(postId: string): Promise<IPostDocument | null> {
-        return this.model
-        .findOne({ _id: postId, isDeleted: false })
+        return await this.model
+        .findOne({ _id: postId, isPublished: true, isDeleted: false })
         .populate("author");
+    }
+
+    async findMyPosts(userId: string, isPublished: boolean): Promise<IPostDocument[]> {
+        return await this.model.find({ author: userId, isPublished, isDeleted: false })
+        .populate("author", "name email")
+        .sort({ createdAt: -1 });
     }
 }

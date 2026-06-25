@@ -66,9 +66,8 @@ export default function PostDetailClient({ post, paragraphs }: PostDetailClientP
         </div>
       </div>
 
-      {/* Cover Image Wrapper using Next.js Optimizations */}
-      <div className="relative mb-10 flex aspect-[16/9] w-full items-center justify-center rounded-[14px] bg-surface-alt overflow-hidden border border-border">
-        {post.image ? (
+      {post.image && (
+        <div className="relative mb-10 flex aspect-[16/9] w-full items-center justify-center rounded-[14px] bg-surface-alt overflow-hidden border border-border">
           <Image
             src={post.image}
             alt={post.title}
@@ -77,10 +76,8 @@ export default function PostDetailClient({ post, paragraphs }: PostDetailClientP
             className="object-cover"
             sizes="(max-w-[680px]) 100vw, 680px"
           />
-        ) : (
-          <span className="text-[72px] select-none">📝</span>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* Body Content */}
       <article className="font-serif text-[17px] leading-[1.85] text-ink space-y-6">

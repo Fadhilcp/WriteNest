@@ -12,5 +12,7 @@ export const API_ROUTES = {
         GET_BY_ID: (postId: string) => `/posts/${postId}`,
         UPDATE: (postId: string) => `/posts/${postId}`,
         DELETE: (postId: string) => `/posts/${postId}`,
+        PUBLISH: (postId: string) => `/posts/${postId}/publish`, 
+        GET_MY_POSTS: (isPublished: boolean) => `/posts/me?published=${isPublished}`,
     },
 }

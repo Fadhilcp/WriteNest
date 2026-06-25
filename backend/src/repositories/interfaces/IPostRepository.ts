@@ -5,4 +5,5 @@ export interface IPostRepository extends IBaseRepository<IPostDocument> {
     findAllWithAuthor(): Promise<IPostDocument[]>;
     getPostsByAuthor(authorId: string): Promise<IPostDocument[]>;
     getPostWithAuthor(postId: string): Promise<IPostDocument | null>;
+    findMyPosts(userId: string, isPublished: boolean): Promise<IPostDocument[]>
 }

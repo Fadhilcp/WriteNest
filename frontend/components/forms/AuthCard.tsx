@@ -29,12 +29,10 @@ export default function AuthCard({
   return (
     <div className="flex min-h-[calc(100vh-60px)] items-center justify-center bg-bg px-4 py-10">
       
-      {/* ── Global Loading Overlay ── */}
       {loading && <Loading fullscreen label="Loading…" />}
 
-      {/* ── Visual Frame Card ── */}
       <div className="w-full max-w-[420px] rounded-[18px] border border-border bg-surface px-10 py-11">
-        {/* Brand Header */}
+        {/* Header */}
         <div className="font-serif text-[22px] font-semibold mb-2">
           Write<span className="text-accent-warm">Nest</span>
         </div>
@@ -57,7 +55,6 @@ export default function AuthCard({
             </p>
         )}
 
-        {/* Dynamic Horizontal Rules Splitter */}
         <div className="relative my-5 text-center text-[12px] text-ink-light before:absolute before:top-1/2 before:left-0 before:h-[1px] before:w-[calc(50%-28px)] before:bg-border after:absolute after:top-1/2 after:right-0 after:h-[1px] after:w-[calc(50%-28px)] after:bg-border">
           {dividerText}
         </div>
@@ -69,10 +66,8 @@ export default function AuthCard({
           </p>
         )}
 
-        {/* Interactive Custom Form Layer */}
         {children}
 
-        {/* Optional Legal Footer Blocks */}
         {showLegalText && (
           <p className="mt-[14px] text-center text-[11px] leading-relaxed text-ink-light">
             By creating an account you agree to our{" "}

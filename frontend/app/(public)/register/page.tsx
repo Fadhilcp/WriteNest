@@ -201,7 +201,6 @@ export default function RegisterPage() {
                         {loading ? "Verifying…" : "Verify and Login"}
                     </FormButton>
                     
-                    {/* Manual override to go back to step 1 without losing form data */}
                     <div className="mt-4 text-center">
                         <button 
                             type="button"

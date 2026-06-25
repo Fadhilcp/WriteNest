@@ -34,7 +34,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
 
   if (!post) notFound();
 
-  // Split content text cleanly into distinct elements by paragraphs 
+  // Split content text into distinct elements by paragraphs 
   const paragraphs = (post.content || "")
     .split("\n\n")
     .filter(Boolean);

@@ -56,6 +56,14 @@ class PostService {
     async delete(postId: string) {
         return await api.delete(API_ROUTES.POSTS.DELETE(postId));
     }
+
+    async publish(postId: string) {
+        return await api.patch(API_ROUTES.POSTS.PUBLISH(postId));
+    }
+
+    async getMyPosts(isPublished: boolean) {
+        return await api.get(API_ROUTES.POSTS.GET_MY_POSTS(isPublished));
+    }
 }
 
 export const postService = new PostService();

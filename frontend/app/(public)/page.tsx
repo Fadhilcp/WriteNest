@@ -3,15 +3,9 @@ import Image from "next/image";
 import { IPost } from "@/types";
 import { postService } from "@/services/post.service";
 import PostCard from "@/components/blog/PostCard";
+import { calculateReadTime } from "@/util/string.util";
 
 export const dynamic = "force-dynamic"; 
-
-function calculateReadTime(content: string = ""): string {
-  const wordsPerMinute = 200;
-  const words = content.split(/\s+/).filter(Boolean).length;
-  const minutes = Math.max(1, Math.ceil(words / wordsPerMinute));
-  return `${minutes} min read`;
-}
 
 function getInitials(name: string = ""): string {
   if (!name.trim()) return "?";
@@ -35,7 +29,7 @@ export default async function LandingPage() {
 
   return (
     <>
-      {/* ── Hero Section ── */}
+      {/* Hero Section */}
       <div className="mx-auto max-w-[720px] px-8 pt-[72px] pb-12 text-center">
         <span className="mb-4 inline-block text-[11px] font-medium uppercase tracking-[0.12em] text-accent-warm">
           A home for thoughtful writing
@@ -79,7 +73,6 @@ export default async function LandingPage() {
                 </p>
               )}
               
-              {/* Author Row Using Real Nested Data Structure */}
               <div className="mb-5 flex items-center gap-2">
                 <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-surface-alt text-[11px] font-medium text-ink-mid">
                   {getInitials(featured.author?.name)}

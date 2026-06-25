@@ -13,6 +13,8 @@ export default function MyPostsPage() {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
 
+  const [activeTab, setActiveTab] = useState<"drafts" | "published">("drafts");
+
   const [modal, setModal] = useState<"new" | IPost | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
@@ -20,7 +22,8 @@ export default function MyPostsPage() {
   const fetchPosts = async () => {
     try {
       setLoading(true);
-      const res = await postService.getAll();
+      const isPublishedFlag = activeTab === "published";
+      const res = await postService.getMyPosts(isPublishedFlag);
 
       setPosts(res.data);
     } catch (err) {
@@ -32,7 +35,7 @@ export default function MyPostsPage() {
 
   useEffect(() => {
     fetchPosts();
-  }, []);
+  }, [activeTab]);
 
   const showToast = (msg: string) => {
     setToast(msg);
@@ -71,31 +74,64 @@ export default function MyPostsPage() {
     }
   };
 
+  const handlePublish = async (postId: string) => {
+    try {
+      await postService.publish(postId);
+      showToast("Post published successfully!");
+      fetchPosts();
+    } catch (err) {
+      showToast("Failed to publish post.");
+    }
+  };
+
   return (
     <div className="mx-auto max-w-[1040px] px-8 pt-10 pb-16">
-      {/* Structural Heading wrapper */}
-      <div className="mb-8 flex items-center justify-between border-b border-border pb-6">
+      
+      <div className="mb-6 flex items-center justify-between">
         <div>
           <h1 className="font-serif text-[28px] font-medium -tracking-[0.5px] text-ink sm:text-[34px]">My posts</h1>
           <p className="mt-[4px] text-[13px] text-ink-light">
-            {posts.length} {posts.length === 1 ? "story" : "stories"} managed
+            {posts.length} {activeTab} managed
           </p>
         </div>
         <button 
           className="inline-flex cursor-pointer items-center justify-center rounded-lg bg-ink px-[18px] py-[10px] text-[13px] font-medium text-surface transition-opacity duration-150 hover:opacity-85" 
           onClick={() => setModal("new")}
         >
-          + New post
+          + New draft
         </button>
       </div>
 
-      {/* Control bar interface components */}
+      {/* Tabs */}
+      <div className="mb-6 flex gap-6 border-b border-border">
+        <button
+          className={`pb-3 text-[14px] font-medium transition-colors ${
+            activeTab === "drafts"
+              ? "border-b-2 border-ink text-ink"
+              : "text-ink-light hover:text-ink-mid"
+          }`}
+          onClick={() => setActiveTab("drafts")}
+        >
+          Drafts
+        </button>
+        <button
+          className={`pb-3 text-[14px] font-medium transition-colors ${
+            activeTab === "published"
+              ? "border-b-2 border-ink text-ink"
+              : "text-ink-light hover:text-ink-mid"
+          }`}
+          onClick={() => setActiveTab("published")}
+        >
+          Published
+        </button>
+      </div>
+
       <div className="mb-6 flex gap-3">
         <div className="relative flex flex-1 items-center">
           <span className="absolute left-[14px] pointer-events-none text-[14px] text-ink-light">🔍</span>
           <input
             type="text"
-            placeholder="Search posts by title…"
+            placeholder={`Search ${activeTab} by title…`}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full rounded-lg border border-border bg-surface pl-9 pr-[14px] py-2 text-[14px] text-ink outline-none transition-all focus:border-accent-warm"
@@ -103,7 +139,6 @@ export default function MyPostsPage() {
         </div>
       </div>
 
-      {/* Main loading & layout control switches */}
       {loading ? (
         <div className="flex h-32 items-center justify-center">
           <div className="h-7 w-7 animate-spin rounded-full border-2 border-border border-t-ink" />
@@ -112,29 +147,21 @@ export default function MyPostsPage() {
         <div className="rounded-[14px] border border-dashed border-border bg-surface px-8 py-16 text-center">
           <div className="mb-3 text-[36px]">📝</div>
           <h3 className="mb-[6px] font-serif text-[17px] font-medium text-ink">
-            {search ? "No posts match search criteria" : "No stories authored yet"}
+            {search ? "No posts match search criteria" : `No ${activeTab} found`}
           </h3>
           <p className="mb-5 text-[13px] text-ink-mid">
-            {search ? "Try checking spelling variations." : "Start sharing concepts to the public feed."}
+            {search ? "Try checking spelling variations." : activeTab === "drafts" ? "Start writing your next big idea." : "Publish a draft to see it here."}
           </p>
-          {!search && (
-            <button 
-              className="inline-flex cursor-pointer items-center justify-center rounded-lg bg-ink px-[18px] py-[10px] text-[13px] font-medium text-surface transition-opacity duration-150 hover:opacity-85" 
-              onClick={() => setModal("new")}
-            >
-              Write your first story
-            </button>
-          )}
         </div>
       ) : (
         <PostTable
           filteredPosts={filtered} 
           onEdit={(p) => setModal(p)} 
           onDeleteTarget={(id) => setDeleteTarget(id)} 
+          onPublish={handlePublish}
         />
       )}
 
-      {/* Layout Layer Modals mapping overlays */}
       {modal !== null && (
         <PostFormModal
           post={modal === "new" ? null : modal}

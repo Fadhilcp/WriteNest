@@ -5,7 +5,6 @@ interface InputFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   id: string;
 }
 
-// Reusable Input Component 
 export function InputField({ label, id, ...props }: InputFieldProps) {
   return (
     <div className="mb-[18px]">

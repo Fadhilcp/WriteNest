@@ -21,6 +21,11 @@ const postSchema = new Schema({
         ref: "User",
         required: true,
     },
+    isPublished: {
+        type: Boolean,
+        default: false,
+        required: true,
+    },
     isDeleted: {
         type: Boolean,
         default: false,

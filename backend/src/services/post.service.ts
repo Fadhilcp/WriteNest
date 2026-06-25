@@ -26,9 +26,16 @@ export class PostService implements IPostService{
         return await this._postRepository.findAllWithAuthor();
     }
 
-    async getPostById(id: string): Promise<IPostDocument | null> {
-        const post = await this._postRepository.getPostWithAuthor(id);
-        if (!post) throw new Error(APP_MESSAGES.POSTS.NOT_FOUND);
+    async getMyPosts(userId: string, isPublished: boolean): Promise<IPostDocument[]> {
+        return await this._postRepository.findMyPosts(userId, isPublished);
+    }
+
+    async getPostById(postId: string): Promise<IPostDocument | null> {
+        const post = await this._postRepository.getPostWithAuthor(postId);
+
+        if (!post || post.isDeleted || !post.isPublished) {
+            throw new Error(APP_MESSAGES.POSTS.NOT_FOUND);
+        }
         return post;
     }
 
@@ -41,11 +48,30 @@ export class PostService implements IPostService{
             throw new Error(APP_MESSAGES.POSTS.UNAUTHORIZED_UPDATE);
         }
 
+        if (post.isPublished) {
+            throw new Error("Cannot edit a post after it has been published.");
+        }
+
         if (fileBuffer) {
             updates.image = await uploadToCloudinary(fileBuffer);
         }
 
         return await this._postRepository.update(id, updates);
+    }
+
+    async publishPost(postId: string, authorId: string): Promise<IPostDocument | null> {
+        const post = await this._postRepository.findOne({ _id: postId, isDeleted: false });
+        if (!post) throw new Error(APP_MESSAGES.POSTS.NOT_FOUND);
+
+        if (post.author.toString() !== authorId) {
+            throw new Error(APP_MESSAGES.POSTS.UNAUTHORIZED_UPDATE);
+        }
+
+        if (post.isPublished) {
+            throw new Error("Post is already published.");
+        }
+
+        return await this._postRepository.update(postId, { isPublished: true } as Partial<IPostDocument>);
     }
 
     async deletePost(id: string, authorId: string): Promise<boolean> {
